@@ -1,0 +1,33 @@
+# ... other nhost.yaml configurations ...
+
+# Cron jobs configuration
+# Schedule format: https://crontab.guru/
+# Timezone is UTC
+cron:
+  # Run daily mission generation every day at 00:05 UTC
+  generateDailyMissions:
+    schedule: '5 0 * * *' # 5 minutes past midnight UTC
+    # URL of your deployed Nhost function
+    # Replace [your-subdomain] and [your-region] with your actual Nhost project details
+    url: https://[your-subdomain].functions.[your-region].nhost.run/generate-missions
+    # Optional: Add a secret header for security
+    # headers:
+    #   X-Cron-Secret: ${CRON_SECRET} # Use an environment variable for the secret
+
+  # Run weekly mission generation every Monday at 00:10 UTC
+  generateWeeklyMissions:
+    schedule: '10 0 * * 1' # 10 minutes past midnight UTC on Mondays
+    url: https://[your-subdomain].functions.[your-region].nhost.run/generate-missions
+    # Note: You'll need logic inside the function (or separate functions)
+    # to know WHICH type ('DAILY', 'WEEKLY', 'SEASONAL') to generate based on the trigger.
+    # A simple way is separate function endpoints (e.g., /generate-daily, /generate-weekly)
+    # or passing a query parameter/body payload if using webhooks.
+    # For this example, the function currently defaults to 'DAILY'.
+    # You would need to modify the function to accept a type parameter.
+
+  # Run seasonal mission generation on the 1st of Jan, Apr, Jul, Oct at 00:15 UTC
+  generateSeasonalMissions:
+    schedule: '15 0 1 1,4,7,10 *' # 15 mins past midnight UTC on 1st day of Jan, Apr, Jul, Oct
+    url: https://[your-subdomain].functions.[your-region].nhost.run/generate-missions
+
+# ... other configurations ...
